@@ -76,6 +76,7 @@
       background-color: #fff;
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
       padding: 0.5rem;
+      min-width: 150px;
     }
 
     .dropdown-content label {
@@ -116,7 +117,7 @@
           const skillsFilters = Array.from(document.querySelectorAll(".skills-filter:checked")).map(input => input.value);
 
           const filteredEmployees = employees.filter((employee) => {
-            const matchName = employee.name && employee.name.toLowerCase().includes(nameFilter);
+            const matchName = !employee.name || employee.name.toLowerCase().includes(nameFilter);
             const matchDesignation = designationFilter === "" || employee.designation === designationFilter;
             const matchSkills = skillsFilters.length === 0 || skillsFilters.every(skill => employee.skills.includes(skill));
             return matchName && matchDesignation && matchSkills;
@@ -127,12 +128,6 @@
 
         document.querySelector("#nameFilter").addEventListener("input", filterEmployees);
         document.querySelector("#designationFilter").addEventListener("change", filterEmployees);
-        document.querySelector("#skillsDropdown").addEventListener("change", filterEmployees);
-        document.querySelectorAll(".skills-filter").forEach((checkbox) => {
-          checkbox.addEventListener("change", filterEmployees);
-        });
-
-        // Dropdown toggle
         document.querySelector("#skillsDropdown").addEventListener("change", function() {
           const dropdownContent = document.querySelector(".dropdown-content");
           if (this.checked) {
@@ -140,6 +135,10 @@
           } else {
             dropdownContent.style.display = "none";
           }
+          filterEmployees();
+        });
+        document.querySelectorAll(".skills-filter").forEach((checkbox) => {
+          checkbox.addEventListener("change", filterEmployees);
         });
 
         // Initial rendering
