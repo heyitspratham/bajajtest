@@ -8,7 +8,7 @@ body {
 
 /* Header styles */
 header {
-  background-color: #333;
+  background-color: #312f2f;
   color: #fff;
   padding: 20px;
   text-align: center;
@@ -69,7 +69,7 @@ table th {
 }
 
 /* Alternate row styles */
-table tr:nth-child(even) {
+table tr {
   background-color: #f2f2f2;
 }
 
@@ -138,4 +138,14 @@ select:focus{
   text-align: center;
   font-family: 'Courier New', Courier, monospace;
   margin: .2em;
+}
+
+.dropdown-label{
+  outline: none;
+  border-color: #333;
+  background-color: #fff;
+}
+
+.dropdown-content{
+  padding-right: .5em;
 }
