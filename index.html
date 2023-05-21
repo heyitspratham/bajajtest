@@ -12,8 +12,6 @@
       <div class="">
         <label for="nameFilter">Search by Name:</label>
         <input type="text" id="nameFilter" placeholder="Enter name">
-      
-
       </div>
       <div class="">
         <label for="designationFilter">Filter by Designation:</label>
@@ -23,24 +21,24 @@
           <option value="QA Engineer">QA Engineer</option>
           <option value="Project Manager">Project Manager</option>
         </select>
-
       </div>
       <div class="">
         <label for="skillsFilter">Filter by Skills:</label>
-        <select id="skillsFilter">
-          <option value="">All</option>
-          <option value="JavaScript">JavaScript</option>
-          <option value="Python">Python</option>
-          <option value="Java">Java</option>
-          <option value="HTML">HTML</option>
-          <option value="CSS">CSS</option>
-          <option value="Photoshop">Photoshop</option>
-          <option value="Manual Testing">Manual Testing</option>
-          <option value="SQL">SQL</option>
-        </select>
-
+        <div class="checkbox-dropdown">
+          <input type="checkbox" id="skillsDropdown" class="dropdown-checkbox">
+          <label for="skillsDropdown" class="dropdown-label">Select Skills</label>
+          <div class="dropdown-content">
+            <label><input type="checkbox" class="skills-filter" value="JavaScript">JavaScript</label>
+            <label><input type="checkbox" class="skills-filter" value="Python">Python</label>
+            <label><input type="checkbox" class="skills-filter" value="Java">Java</label>
+            <label><input type="checkbox" class="skills-filter" value="HTML">HTML</label>
+            <label><input type="checkbox" class="skills-filter" value="CSS">CSS</label>
+            <label><input type="checkbox" class="skills-filter" value="Photoshop">Photoshop</label>
+            <label><input type="checkbox" class="skills-filter" value="Manual Testing">Manual Testing</label>
+            <label><input type="checkbox" class="skills-filter" value="SQL">SQL</label>
+          </div>
+        </div>
       </div>
-    
     </div>
   
     <table id="employeeTable">
@@ -55,6 +53,39 @@
       <tbody></tbody>
     </table>
   </div>
+
+  <style>
+    .checkbox-dropdown {
+      position: relative;
+      display: inline-block;
+    }
+
+    .dropdown-checkbox {
+      display: none;
+    }
+
+    .dropdown-label {
+      cursor: pointer;
+      padding: 0.5rem;
+      background-color: #eee;
+    }
+
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      background-color: #fff;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      padding: 0.5rem;
+    }
+
+    .dropdown-content label {
+      display: block;
+    }
+
+    .dropdown-content label input {
+      margin-right: 0.5rem;
+    }
+  </style>
 
   <script>
     // Fetch JSON data from the provided link
@@ -82,12 +113,12 @@
         function filterEmployees() {
           const nameFilter = document.querySelector("#nameFilter").value.trim().toLowerCase();
           const designationFilter = document.querySelector("#designationFilter").value;
-          const skillsFilter = document.querySelector("#skillsFilter").value;
+          const skillsFilters = Array.from(document.querySelectorAll(".skills-filter:checked")).map(input => input.value);
 
           const filteredEmployees = employees.filter((employee) => {
             const matchName = employee.name && employee.name.toLowerCase().includes(nameFilter);
             const matchDesignation = designationFilter === "" || employee.designation === designationFilter;
-            const matchSkills = skillsFilter === "" || employee.skills.includes(skillsFilter);
+            const matchSkills = skillsFilters.length === 0 || skillsFilters.every(skill => employee.skills.includes(skill));
             return matchName && matchDesignation && matchSkills;
           });
 
@@ -96,7 +127,20 @@
 
         document.querySelector("#nameFilter").addEventListener("input", filterEmployees);
         document.querySelector("#designationFilter").addEventListener("change", filterEmployees);
-        document.querySelector("#skillsFilter").addEventListener("change", filterEmployees);
+        document.querySelector("#skillsDropdown").addEventListener("change", filterEmployees);
+        document.querySelectorAll(".skills-filter").forEach((checkbox) => {
+          checkbox.addEventListener("change", filterEmployees);
+        });
+
+        // Dropdown toggle
+        document.querySelector("#skillsDropdown").addEventListener("change", function() {
+          const dropdownContent = document.querySelector(".dropdown-content");
+          if (this.checked) {
+            dropdownContent.style.display = "block";
+          } else {
+            dropdownContent.style.display = "none";
+          }
+        });
 
         // Initial rendering
         renderEmployees(employees);
